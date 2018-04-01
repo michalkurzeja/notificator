@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"golang.org/x/sys/windows"
 )
 
 type Options struct {
@@ -110,8 +111,7 @@ func (w windowsNotificator) push(title string, text string, iconPath string) *ex
 	textArg := fmt.Sprintf("\"%s\"", text)
 	cmd := exec.Command("growlnotify", "/i:" + iconPath, titleOpt, textArg)
 
-	const CREATE_NO_WINDOW = 0x08000000
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: CREATE_NO_WINDOW}
+	cmd.SysProcAttr = &syscall.SysProcAttr{Foreground: false}
 
 	return cmd
 }
