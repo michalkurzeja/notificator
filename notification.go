@@ -106,7 +106,9 @@ func (l linuxNotificator) pushCritical(title string, text string, iconPath strin
 type windowsNotificator struct{}
 
 func (w windowsNotificator) push(title string, text string, iconPath string) *exec.Cmd {
-	return exec.Command("growlnotify", "/i:", iconPath, "/t:", title, text)
+	titleOpt := fmt.Sprintf("/t:\"%s\"", title)
+	textArg := fmt.Sprintf("\"%s\"", text)
+	return exec.Command("growlnotify", "/i:" + iconPath, titleOpt, textArg)
 }
 
 // Causes the notification to stick around until clicked.
