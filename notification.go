@@ -1,6 +1,7 @@
 package notificator
 
 import (
+	"syscall"
 	"fmt"
 	"os/exec"
 	"runtime"
@@ -40,7 +41,6 @@ func (n Notificator) Push(title string, text string, iconPath string, urgency st
 	}
 
 	return n.notifier.push(title, text, icon).Run()
-
 }
 
 type osxNotificator struct {
@@ -108,7 +108,12 @@ type windowsNotificator struct{}
 func (w windowsNotificator) push(title string, text string, iconPath string) *exec.Cmd {
 	titleOpt := fmt.Sprintf("/t:\"%s\"", title)
 	textArg := fmt.Sprintf("\"%s\"", text)
-	return exec.Command("growlnotify", "/i:" + iconPath, titleOpt, textArg)
+	cmd := exec.Command("growlnotify", "/i:" + iconPath, titleOpt, textArg)
+
+	const CREATE_NO_WINDOW = 0x08000000
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: CREATE_NO_WINDOW}
+
+	return cmd
 }
 
 // Causes the notification to stick around until clicked.
