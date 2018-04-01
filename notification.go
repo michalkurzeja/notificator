@@ -7,7 +7,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"golang.org/x/sys/windows"
 )
 
 type Options struct {
